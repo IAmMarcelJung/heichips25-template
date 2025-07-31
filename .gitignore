@@ -8,3 +8,5 @@ runs/
 *.elf
 *.bin
 *.hex
+ip/controller
+*.bak

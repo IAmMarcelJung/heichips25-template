@@ -5,17 +5,21 @@ PDK ?= ihp-sg13g2
 
 RUN_TAG = $(shell ls librelane/runs/ -1 | tail -n 1)
 
+update-controller:
+	./scripts/update_controller.sh
+.PHONY: update_controller
+
 # Macro - LibreLane
 
-macro:
+macro: update-controller
 	cd librelane; librelane config.yaml --pdk $(PDK)
 .PHONY: macro
 
-macro-openroad:
+macro-openroad: update-controller
 	cd librelane; librelane config.yaml --pdk $(PDK) --last-run --flow OpenInOpenROAD
 .PHONY: macro-openroad
 
-macro-klayout:
+macro-klayout: update-controller
 	cd librelane; librelane config.yaml --pdk $(PDK) --last-run --flow OpenInKLayout
 .PHONY: macro-klayout
 

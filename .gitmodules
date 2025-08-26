@@ -1,3 +1,6 @@
 [submodule "submodules/heichips25-ppwm"]
 	path = submodules/heichips25-ppwm
 	url = git@github.com:towoe/heichips25-ppwm.git
+[submodule "submodules/FALU"]
+	path = submodules/FALU
+	url = git@github.com:christophhuebner/FALU.git

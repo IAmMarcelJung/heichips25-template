@@ -22,11 +22,6 @@ spec = importlib.util.spec_from_file_location("ppwm_tb", ppwm_tb_path)
 ppwm_tb = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(ppwm_tb)
 
-sdr_tb_path = this_path.parent / "submodules/heichips25_SDR_new/tb/testbench.py"
-spec = importlib.util.spec_from_file_location("sdr_tb", sdr_tb_path)
-sdr_tb = importlib.util.module_from_spec(spec)
-spec.loader.exec_module(sdr_tb)
-
 
 @cocotb.test()
 async def compare_wrapper_vs_gold(dut):
@@ -36,7 +31,7 @@ async def compare_wrapper_vs_gold(dut):
     clock = Clock(dut.clk, 10, "ns")
     await cocotb.start(clock.start())
 
-    dut.ena.value = 0  # Enable PPWM, disable SDR
+    dut.ena.value = 0  # Enable PPWM, disable FALU
     dut.ui_in.value = 0
     dut.uio_in.value = 0
 
@@ -50,9 +45,10 @@ async def compare_wrapper_vs_gold(dut):
 
     await ppwm_tb.pwm_test(dut)
 
-    dut.ena.value = 1  # Disable PPWM, enable SDR
+    dut.ena.value = 1  # Disable PPWM, enable FALU
 
-    await sdr_tb.sdr_test(dut)
+    # Just wait some time since we don't have a FALU testbench integrated yet
+    await Timer(1000, "ns")
 
 
 async def check_wrapper_vs_dut_values(wrapper_value, project_value, project_name):
@@ -84,7 +80,10 @@ async def checker(dut):
         if not dut.ena.value:
             await check_wrapper_vs_project_all_outputs(dut, dut.ppwm_i, "PPWM")
         else:
-            await check_wrapper_vs_project_all_outputs(dut, dut.sdr_i, "SDR")
+            # await check_wrapper_vs_project_all_outputs(dut, dut.sdr_i, "SDR")
+            # FIXME: Check what could be put here as long as there is no
+            # accessible testbench function
+            pass
 
 
 if __name__ == "__main__":
@@ -116,14 +115,19 @@ if __name__ == "__main__":
             / f"{scl}.v"
         )
         sources.append(MACRO_NL)
+        sources.extend(list(testbench_path.glob("testbench.sv")))
+        sources.extend(
+            list(testbench_path.glob("../submodules/FALU/src/heichips25_template.sv"))
+        )
+        sources.extend(list(testbench_path.glob("../submodules/heichips25-ppwm/src/*")))
         defines = {"FUNCTIONAL": True, "UNIT_DELAY": "#0"}
     else:
         sources.extend(list(testbench_path.glob("../src/*")))
         sources.extend(list(testbench_path.glob("../submodules/heichips25-ppwm/src/*")))
         sources.extend(
-            list(testbench_path.glob("../submodules/heichips25_SDR_new/src/*"))
+            list(testbench_path.glob("../submodules/FALU/src/heichips25_template.sv"))
         )
-        sources.extend(list(testbench_path.glob("testbench.sv")))
+        sources.extend(testbench_path.glob("testbench.sv"))
         defines = {"RTL": True}
 
     hdl_toplevel = "testbench"
@@ -139,11 +143,17 @@ if __name__ == "__main__":
         if sim == "verilator"
         else ["-gno-specify"],
     )
+    trace_file = ""
+
+    if gl:
+        trace_file = f"{hdl_toplevel}_gl.fst"
+    else:
+        trace_file = f"{hdl_toplevel}.fst"
 
     runner.test(
         hdl_toplevel=hdl_toplevel,
-        test_module="testbench,",
+        test_module="testbench",
         timescale=["1ns", "1ps"],
         waves=True,
-        plusargs=["--trace-file", f"{hdl_toplevel}.fst"] if sim == "verilator" else [],
+        plusargs=["--trace-file", trace_file] if sim == "verilator" else [],
     )

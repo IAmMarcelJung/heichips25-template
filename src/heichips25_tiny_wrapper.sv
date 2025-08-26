@@ -4,8 +4,6 @@
 // Adapted from the Tiny Tapeout template
 
 `default_nettype none
-// `include "../../submodules/heichips25-ppwm/src/heichips25_ppwm.sv"
-// `include "../../submodules/heichips25_SDR_new/src/heichips25_template.sv"
 
 module heichips25_tiny_wrapper (
     input  wire [7:0] ui_in,    // Dedicated inputs
@@ -18,54 +16,54 @@ module heichips25_tiny_wrapper (
     input  wire       rst_n     // reset_n - low to reset
 );
 
-    wire [7:0] uo_out_ppwm;
-    wire [7:0] uio_out_ppwm;
-    wire [7:0] uio_oe_ppwm;
-    wire rst_n_ppwm;
-    wire ena_ppwm;
+    wire [7:0] uo_out_project_0;
+    wire [7:0] uio_out_project_0;
+    wire [7:0] uio_oe_project_0;
+    wire rst_n_project_0;
+    wire ena_project_0;
 
-    wire [7:0] uo_out_sdr;
-    wire [7:0] uio_out_sdr;
-    wire [7:0] uio_oe_sdr;
-    wire rst_n_sdr;
-    wire ena_sdr;
+    wire [7:0] uo_out_project_1;
+    wire [7:0] uio_out_project_1;
+    wire [7:0] uio_oe_project_1;
+    wire rst_n_project_1;
+    wire ena_project_1;
 
 
     // If ena = 0, the PPWM project will be active and if ena = 1, the SDR project will be active
-    assign ena_sdr = ena;
-    assign ena_ppwm = ~ena_sdr; // Only one project is enabled at the same time
+    assign ena_project_1 = ena;
+    assign ena_project_0 = ~ena_project_1; // Only one project is enabled at the same time
 
-    assign uo_out = ena_ppwm ? uo_out_ppwm : uo_out_sdr;
-    assign uio_out = ena_ppwm ? uio_out_ppwm : uio_out_sdr;
-    assign uio_oe = ena_ppwm ? uio_oe_ppwm : uio_oe_sdr;
+    assign uo_out = ena_project_0 ? uo_out_project_0 : uo_out_project_1;
+    assign uio_out = ena_project_0 ? uio_out_project_0 : uio_out_project_1;
+    assign uio_oe = ena_project_0 ? uio_oe_project_0 : uio_oe_project_1;
 
     // Reset the project that is not enabled. Also reset if the external
     // reset is triggered.
-    assign rst_n_ppwm = ena_ppwm & rst_n;
-    assign rst_n_sdr = ena_sdr & rst_n;
+    assign rst_n_project_0 = ena_project_0 & rst_n;
+    assign rst_n_project_1 = ena_project_1 & rst_n;
 
     // Instantiation of the PPWM project
     heichips25_ppwm ppwm_i (
         .ui_in(ui_in),
-        .uo_out(uo_out_ppwm),
+        .uo_out(uo_out_project_0),
         .uio_in(uio_in),
-        .uio_out(uio_out_ppwm),
-        .uio_oe(uio_oe_ppwm),
+        .uio_out(uio_out_project_0),
+        .uio_oe(uio_oe_project_0),
         .ena(1'b1), // The internal enable signal is always 1
         .clk(clk),
-        .rst_n(rst_n_ppwm)
+        .rst_n(rst_n_project_0)
     );
 
-    // Instantiation of the SDR project
-    heichips25_template sdr_i (
+    // Instantiation of the FALU project
+    heichips25_template falu_i (
         .ui_in(ui_in),
-        .uo_out(uo_out_sdr),
+        .uo_out(uo_out_project_1),
         .uio_in(uio_in),
-        .uio_out(uio_out_sdr),
-        .uio_oe(uio_oe_sdr),
+        .uio_out(uio_out_project_1),
+        .uio_oe(uio_oe_project_1),
         .ena(1'b1), // The internal enable signal is always 1
         .clk(clk),
-        .rst_n(rst_n_sdr)
+        .rst_n(rst_n_project_1)
     );
 
 endmodule

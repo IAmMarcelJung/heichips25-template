@@ -10,11 +10,7 @@ VERILOG_FILES: [
   "dir::../submodules/heichips25-ppwm/src/pwm.sv",
   "dir::../submodules/heichips25-ppwm/src/ex.sv",
   "dir::../submodules/heichips25-ppwm/src/mem.sv",
-  "dir::../submodules/heichips25_SDR_new/src/heichips25_template.sv",
-  "dir::../submodules/heichips25_SDR_new/src/matrix_accumulator.sv",
-  "dir::../submodules/heichips25_SDR_new/src/MAC4x4.sv",
-  "dir::../submodules/heichips25_SDR_new/src/InputProces.sv",
-  "dir::../submodules/heichips25_SDR_new/src/DP_Matrix_G.sv"
+  "dir::../submodules/FALU/src/heichips25_template.sv"
 ]
 CLOCK_PORT: clk
 CLOCK_PERIOD: 10 # 10ns = 100MHz

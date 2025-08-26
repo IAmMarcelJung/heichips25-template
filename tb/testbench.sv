@@ -7,12 +7,12 @@ module testbench (
     output [7:0] uo_out_wrapper,
     output [7:0] uio_out_wrapper,
     output [7:0] uio_oe_wrapper,
-    output [7:0] uo_out_ppwm,
-    output [7:0] uio_out_ppwm,
-    output [7:0] uio_oe_ppwm,
-    output [7:0] uo_out_sdr,
-    output [7:0] uio_out_sdr,
-    output [7:0] uio_oe_sdr
+    output [7:0] uo_out_project_0,
+    output [7:0] uio_out_project_0,
+    output [7:0] uio_oe_project_0,
+    output [7:0] uo_out_project_1,
+    output [7:0] uio_out_project_1,
+    output [7:0] uio_oe_project_1
 );
 
     heichips25_ppwm ppwm_i (
@@ -21,9 +21,9 @@ module testbench (
         .ena(1'b1),
         .ui_in(ui_in),
         .uio_in(uio_in),
-        .uo_out(uo_out_ppwm),
-        .uio_out(uio_out_ppwm),
-        .uio_oe(uio_oe_ppwm)
+        .uo_out(uo_out_project_0),
+        .uio_out(uio_out_project_0),
+        .uio_oe(uio_oe_project_0)
     );
 
     heichips25_tiny_wrapper heichips25_tiny_wrapper_i (
@@ -37,14 +37,14 @@ module testbench (
         .uio_oe(uio_oe_wrapper)
     );
 
-    heichips25_template sdr_i (
+    heichips25_template falu_i (
         .clk(clk),
         .rst_n(rst_n),
         .ena(1'b1),
         .ui_in(ui_in),
         .uio_in(uio_in),
-        .uo_out(uo_out_sdr),
-        .uio_out(uio_out_sdr),
-        .uio_oe(uio_oe_sdr)
+        .uo_out(uo_out_project_1),
+        .uio_out(uio_out_project_1),
+        .uio_oe(uio_oe_project_1)
     );
 endmodule

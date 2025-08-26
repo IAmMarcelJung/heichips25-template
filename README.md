@@ -1,11 +1,11 @@
 # HeiChips 2025 Tiny Wrapper
 
 This repository contains a wrapper for the
-[SDR](https://github.com/RainChinChao/heichips25_SDR_new) and the
+[FALU](https://github.com/christophhuebner/FALU/tree/main) and the
 [PPWM](https://github.com/towoe/heichips25-ppwm) project, since these occupy
 less than half of the small template.
 
-![A screenshot of the design opened in openROAD](doc/img/openroad.png "'Tiny Wrapper'")
+![A screenshot of the design opened in openROAD](doc/img/openroad.jpg "'Tiny Wrapper'")
 
 Due to the limited number of pins, only one design can be active at a time. The
 designs can be selected using the `ena` input.
@@ -13,7 +13,7 @@ designs can be selected using the `ena` input.
 | `ena`       | Selected Project   |
 |:-----------:|:------------------:|
 |  0          |  PPWM              |
-|  1          |   SDR              |
+|  1          |  FALU              |
 
 ## Prerequisites
 

@@ -15,17 +15,6 @@ module testbench (
     output [7:0] uio_oe_project_1
 );
 
-    heichips25_ppwm ppwm_i (
-        .clk(clk),
-        .rst_n(rst_n),
-        .ena(1'b1),
-        .ui_in(ui_in),
-        .uio_in(uio_in),
-        .uo_out(uo_out_project_0),
-        .uio_out(uio_out_project_0),
-        .uio_oe(uio_oe_project_0)
-    );
-
     heichips25_tiny_wrapper heichips25_tiny_wrapper_i (
         .clk(clk),
         .rst_n(rst_n),
@@ -35,6 +24,17 @@ module testbench (
         .uo_out(uo_out),
         .uio_out(uio_out),
         .uio_oe(uio_oe)
+    );
+
+    heichips25_ppwm ppwm_i (
+        .clk(clk),
+        .rst_n(rst_n),
+        .ena(1'b1),
+        .ui_in(ui_in),
+        .uio_in(uio_in),
+        .uo_out(uo_out_project_0),
+        .uio_out(uio_out_project_0),
+        .uio_oe(uio_oe_project_0)
     );
 
     heichips25_template falu_i (

@@ -18,9 +18,14 @@ from cocotb.triggers import Timer, RisingEdge
 this_path = Path(__file__).resolve().parent
 
 ppwm_tb_path = this_path.parent / "submodules/heichips25-ppwm/tb/testbench.py"
-spec = importlib.util.spec_from_file_location("ppwm_tb", ppwm_tb_path)
-ppwm_tb = importlib.util.module_from_spec(spec)
-spec.loader.exec_module(ppwm_tb)
+ppwm_spec = importlib.util.spec_from_file_location("ppwm_tb", ppwm_tb_path)
+ppwm_tb = importlib.util.module_from_spec(ppwm_spec)
+ppwm_spec.loader.exec_module(ppwm_tb)
+
+falu_tb_path = this_path.parent / "submodules/FALU/test_template.py"
+falu_spec = importlib.util.spec_from_file_location("falu_tb", falu_tb_path)
+falu_tb = importlib.util.module_from_spec(falu_spec)
+falu_spec.loader.exec_module(falu_tb)
 
 
 @cocotb.test()
@@ -47,8 +52,7 @@ async def compare_wrapper_vs_gold(dut):
 
     dut.ena.value = 1  # Disable PPWM, enable FALU
 
-    # Just wait some time since we don't have a FALU testbench integrated yet
-    await Timer(1000, "ns")
+    await falu_tb.async_falucinator(dut)
 
 
 async def check_wrapper_vs_dut_values(wrapper_value, project_value, project_name):
@@ -80,9 +84,7 @@ async def checker(dut):
         if not dut.ena.value:
             await check_wrapper_vs_project_all_outputs(dut, dut.ppwm_i, "PPWM")
         else:
-            # await check_wrapper_vs_project_all_outputs(dut, dut.sdr_i, "SDR")
-            # FIXME: Check what could be put here as long as there is no
-            # accessible testbench function
+            await check_wrapper_vs_project_all_outputs(dut, dut.falu_i, "FALU")
             pass
 
 
@@ -115,18 +117,21 @@ if __name__ == "__main__":
             / f"{scl}.v"
         )
         sources.append(MACRO_NL)
-        sources.extend(list(testbench_path.glob("testbench.sv")))
+        sources.extend(testbench_path.glob("testbench.sv"))
         sources.extend(
             list(testbench_path.glob("../submodules/FALU/src/heichips25_template.sv"))
         )
-        sources.extend(list(testbench_path.glob("../submodules/heichips25-ppwm/src/*")))
+        sources.extend(
+            list(testbench_path.glob("../submodules/heichips25-ppwm/src/*.sv"))
+        )
+        sources.extend(list(testbench_path.glob("../submodules/FALU/src/*.sv")))
         defines = {"FUNCTIONAL": True, "UNIT_DELAY": "#0"}
     else:
         sources.extend(list(testbench_path.glob("../src/*")))
-        sources.extend(list(testbench_path.glob("../submodules/heichips25-ppwm/src/*")))
         sources.extend(
-            list(testbench_path.glob("../submodules/FALU/src/heichips25_template.sv"))
+            list(testbench_path.glob("../submodules/heichips25-ppwm/src/*.sv"))
         )
+        sources.extend(list(testbench_path.glob("../submodules/FALU/src/*.sv")))
         sources.extend(testbench_path.glob("testbench.sv"))
         defines = {"RTL": True}
 

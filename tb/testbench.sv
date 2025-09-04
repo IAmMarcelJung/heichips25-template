@@ -4,9 +4,9 @@ module testbench (
     input ena,
     input [7:0] ui_in,
     input [7:0] uio_in,
-    output [7:0] uo_out_wrapper,
-    output [7:0] uio_out_wrapper,
-    output [7:0] uio_oe_wrapper,
+    output [7:0] uo_out,
+    output [7:0] uio_out,
+    output [7:0] uio_oe,
     output [7:0] uo_out_project_0,
     output [7:0] uio_out_project_0,
     output [7:0] uio_oe_project_0,
@@ -32,9 +32,9 @@ module testbench (
         .ena(ena),
         .ui_in(ui_in),
         .uio_in(uio_in),
-        .uo_out(uo_out_wrapper),
-        .uio_out(uio_out_wrapper),
-        .uio_oe(uio_oe_wrapper)
+        .uo_out(uo_out),
+        .uio_out(uio_out),
+        .uio_oe(uio_oe)
     );
 
     heichips25_template falu_i (

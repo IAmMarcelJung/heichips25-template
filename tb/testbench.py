@@ -124,14 +124,18 @@ if __name__ == "__main__":
         sources.extend(
             list(testbench_path.glob("../submodules/heichips25-ppwm/src/*.sv"))
         )
-        sources.extend(list(testbench_path.glob("../submodules/FALU/src/*.sv")))
+        sources.extend(
+            list(testbench_path.glob("../submodules/FALU/src/heichips25_template.sv"))
+        )
         defines = {"FUNCTIONAL": True, "UNIT_DELAY": "#0"}
     else:
         sources.extend(list(testbench_path.glob("../src/*")))
         sources.extend(
             list(testbench_path.glob("../submodules/heichips25-ppwm/src/*.sv"))
         )
-        sources.extend(list(testbench_path.glob("../submodules/FALU/src/*.sv")))
+        sources.extend(
+            list(testbench_path.glob("../submodules/FALU/src/heichips25_template.sv"))
+        )
         sources.extend(testbench_path.glob("testbench.sv"))
         defines = {"RTL": True}
 

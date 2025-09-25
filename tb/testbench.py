@@ -22,7 +22,7 @@ ppwm_spec = importlib.util.spec_from_file_location("ppwm_tb", ppwm_tb_path)
 ppwm_tb = importlib.util.module_from_spec(ppwm_spec)
 ppwm_spec.loader.exec_module(ppwm_tb)
 
-falu_tb_path = this_path.parent / "submodules/FALU/test_template.py"
+falu_tb_path = this_path.parent / "submodules/FALU/tb/test_falu.py"
 falu_spec = importlib.util.spec_from_file_location("falu_tb", falu_tb_path)
 falu_tb = importlib.util.module_from_spec(falu_spec)
 falu_spec.loader.exec_module(falu_tb)
@@ -134,7 +134,7 @@ if __name__ == "__main__":
             list(testbench_path.glob("../submodules/heichips25-ppwm/src/*.sv"))
         )
         sources.extend(
-            list(testbench_path.glob("../submodules/FALU/src/heichips25_template.sv"))
+            list(testbench_path.glob("../submodules/FALU/src/heichips25_falu.sv"))
         )
         sources.extend(testbench_path.glob("testbench.sv"))
         defines = {"RTL": True}

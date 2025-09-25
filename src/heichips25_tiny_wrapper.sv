@@ -55,7 +55,7 @@ module heichips25_tiny_wrapper (
     );
 
     // Instantiation of the FALU project
-    heichips25_template falu_i (
+    heichips25_falu falu_i (
         .ui_in(ui_in),
         .uo_out(uo_out_project_1),
         .uio_in(uio_in),

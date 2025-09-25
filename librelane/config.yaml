@@ -10,7 +10,7 @@ VERILOG_FILES: [
   "dir::../submodules/heichips25-ppwm/src/pwm.sv",
   "dir::../submodules/heichips25-ppwm/src/ex.sv",
   "dir::../submodules/heichips25-ppwm/src/mem.sv",
-  "dir::../submodules/FALU/src/heichips25_template.sv"
+  "dir::../submodules/FALU/src/heichips25_falu.sv"
 ]
 CLOCK_PORT: clk
 CLOCK_PERIOD: 10 # 10ns = 100MHz

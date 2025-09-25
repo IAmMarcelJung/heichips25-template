@@ -37,7 +37,7 @@ module testbench (
         .uio_oe(uio_oe_project_0)
     );
 
-    heichips25_template falu_i (
+    heichips25_falu falu_i (
         .clk(clk),
         .rst_n(rst_n),
         .ena(1'b1),

@@ -6,6 +6,7 @@ module testbench (
     input [7:0] uio_in,
     output [7:0] uo_out,
     output [7:0] uio_out,
+`ifndef GL
     output [7:0] uio_oe,
     output [7:0] uo_out_project_0,
     output [7:0] uio_out_project_0,
@@ -13,6 +14,10 @@ module testbench (
     output [7:0] uo_out_project_1,
     output [7:0] uio_out_project_1,
     output [7:0] uio_oe_project_1
+`else
+    output [7:0] uio_oe //no comma in the last line
+`endif
+
 );
 
     heichips25_tiny_wrapper heichips25_tiny_wrapper_i (
@@ -26,6 +31,9 @@ module testbench (
         .uio_oe(uio_oe)
     );
 
+// NOTE: Don't instantiate these modules when doing a gate-level simulation.
+// The waveforms have to be checked manually
+`ifndef GL
     heichips25_ppwm ppwm_i (
         .clk(clk),
         .rst_n(rst_n),
@@ -47,4 +55,6 @@ module testbench (
         .uio_out(uio_out_project_1),
         .uio_oe(uio_oe_project_1)
     );
+`endif
+
 endmodule

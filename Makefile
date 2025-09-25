@@ -27,11 +27,11 @@ copy-macro:
 
 # Simulation & Verification
 
-sim:
+sim:  clean-sim
 	cd tb; python3 testbench.py
 .PHONY: sim
 
-sim-gl:
+sim-gl: clean-sim
 	cd tb; GL=1 python3 testbench.py
 .PHONY: sim-gl
 
@@ -162,9 +162,12 @@ basys3.bit: basys3.frames
 
 # Common
 
-clean:
+clean: clean-sim
 	rm -f ice40hx8k.json ice40hx8k.asc ice40hx8k.bit ice40hx8k-yosys.log
 	rm -f icebreaker.json icebreaker.asc icebreaker.bit icebreaker-yosys.log
 	rm -f ulx3s.json ulx3s.config ulx3s.bit ulx3s-yosys.log
 	rm -f basys3.json basys3.bin basys3.fasm basys3.frames basys3.bit basys3-yosys.log
 	rm -f nano9k.json nano9k.bin nano9k.fasm nano9k.frames nano9k.fs nano9k-yosys.log nano9k_pnr.json
+
+clean-sim:
+	rm -rf tb/sim_build/

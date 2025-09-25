@@ -46,7 +46,10 @@ async def compare_wrapper_vs_gold(dut):
     dut.rst_n.value = 1
     await Timer(100, "ns")
 
-    cocotb.start_soon(checker(dut))
+    gl = os.getenv("GL", False)
+
+    if not gl:
+        cocotb.start_soon(checker(dut))
 
     await ppwm_tb.pwm_test(dut)
 
@@ -85,7 +88,6 @@ async def checker(dut):
             await check_wrapper_vs_project_all_outputs(dut, dut.ppwm_i, "PPWM")
         else:
             await check_wrapper_vs_project_all_outputs(dut, dut.falu_i, "FALU")
-            pass
 
 
 if __name__ == "__main__":
@@ -118,16 +120,7 @@ if __name__ == "__main__":
         )
         sources.append(MACRO_NL)
         sources.extend(testbench_path.glob("testbench.sv"))
-        sources.extend(
-            list(testbench_path.glob("../submodules/FALU/src/heichips25_template.sv"))
-        )
-        sources.extend(
-            list(testbench_path.glob("../submodules/heichips25-ppwm/src/*.sv"))
-        )
-        sources.extend(
-            list(testbench_path.glob("../submodules/FALU/src/heichips25_template.sv"))
-        )
-        defines = {"FUNCTIONAL": True, "UNIT_DELAY": "#0"}
+        defines = {"FUNCTIONAL": True, "UNIT_DELAY": "#1", "GL": True}
     else:
         sources.extend(list(testbench_path.glob("../src/*")))
         sources.extend(
@@ -166,3 +159,8 @@ if __name__ == "__main__":
         waves=True,
         plusargs=["--trace-file", trace_file] if sim == "verilator" else [],
     )
+
+    if gl:
+        print(
+            "\033[93mWARNING: No checks are performed, please check the waveforms manually!\033[0m"
+        )

@@ -43,7 +43,6 @@ async def compare_wrapper_vs_gold(dut):
     # Reset the designs for 100ns
     dut.rst_n.value = 0
     await Timer(100, "ns")
-    dut.rst_n.value = 1
     await Timer(100, "ns")
 
     gl = os.getenv("GL", False)

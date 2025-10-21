@@ -16,31 +16,24 @@ module heichips25_tiny_wrapper (
     input  wire       rst_n     // reset_n - low to reset
 );
 
+    // Bit assignments for the projects. Project 0 uses bits 4-7,
+    // Project 1 uses bits 0-3.
+    localparam PROJECT_0_HIGH = 7;
+    localparam PROJECT_0_LOW  = 4;
+    localparam PROJECT_1_HIGH = 3;
+    localparam PROJECT_1_LOW  = 0;
+
     wire [7:0] uo_out_project_0;
     wire [7:0] uio_out_project_0;
     wire [7:0] uio_oe_project_0;
-    wire rst_n_project_0;
-    wire ena_project_0;
 
     wire [7:0] uo_out_project_1;
     wire [7:0] uio_out_project_1;
     wire [7:0] uio_oe_project_1;
-    wire rst_n_project_1;
-    wire ena_project_1;
 
-
-    // If ena = 0, the PPWM project will be active and if ena = 1, the SDR project will be active
-    assign ena_project_1 = ena;
-    assign ena_project_0 = ~ena_project_1; // Only one project is enabled at the same time
-
-    assign uo_out = ena_project_0 ? uo_out_project_0 : uo_out_project_1;
-    assign uio_out = ena_project_0 ? uio_out_project_0 : uio_out_project_1;
-    assign uio_oe = ena_project_0 ? uio_oe_project_0 : uio_oe_project_1;
-
-    // Reset the project that is not enabled. Also reset if the external
-    // reset is triggered.
-    assign rst_n_project_0 = ena_project_0 & rst_n;
-    assign rst_n_project_1 = ena_project_1 & rst_n;
+    assign uo_out = {uo_out_project_0[PROJECT_0_HIGH:PROJECT_0_LOW], uo_out_project_1[PROJECT_1_HIGH:PROJECT_1_LOW]};
+    assign uio_out = {uio_out_project_0[PROJECT_0_HIGH:PROJECT_0_LOW], uio_out_project_1[PROJECT_1_HIGH:PROJECT_1_LOW]};
+    assign uio_oe = {uio_oe_project_0[PROJECT_0_HIGH:PROJECT_0_LOW], uio_oe_project_1[PROJECT_1_HIGH:PROJECT_1_LOW]};
 
     // Instantiation of the PPWM project
     heichips25_ppwm ppwm_i (
@@ -49,9 +42,9 @@ module heichips25_tiny_wrapper (
         .uio_in(uio_in),
         .uio_out(uio_out_project_0),
         .uio_oe(uio_oe_project_0),
-        .ena(1'b1), // The internal enable signal is always 1
+        .ena(ena),
         .clk(clk),
-        .rst_n(rst_n_project_0)
+        .rst_n(rst_n)
     );
 
     // Instantiation of the FALU project
@@ -61,9 +54,9 @@ module heichips25_tiny_wrapper (
         .uio_in(uio_in),
         .uio_out(uio_out_project_1),
         .uio_oe(uio_oe_project_1),
-        .ena(1'b1), // The internal enable signal is always 1
+        .ena(ena),
         .clk(clk),
-        .rst_n(rst_n_project_1)
+        .rst_n(rst_n)
     );
 
 endmodule

@@ -75,6 +75,8 @@ async def check_wrapper_vs_dut_values(wrapper_value, project_value, project_name
 def _slice_if_range_given(signal_value, bit_range: slice | None):
     """Slice the signal if both high and low are provided."""
     if bit_range is not None:
+        # This is important so that the slicing behaves like in Verilog
+        signal_value.big_endian = False;
         return signal_value[bit_range.start:bit_range.stop]
     return signal_value
 
@@ -98,13 +100,11 @@ async def checker(dut):
     """Asynchronous checker that compares wrapper vs. standalone outputs."""
     while True:
         await RisingEdge(dut.clk)
-        bit_range_project_0 = slice(PPWM_RANGE)
-        bit_range_project_1 = slice(FALU_RANGE)
 
         await check_wrapper_vs_project_all_outputs(dut, dut.ppwm_i, "PPWM",
-                                                   bit_range_project_0)
+                                                   PPWM_RANGE)
         await check_wrapper_vs_project_all_outputs(dut, dut.falu_i, "FALU",
-                                                   bit_range_project_1)
+                                                   FALU_RANGE)
 
 
 if __name__ == "__main__":

@@ -1,19 +1,31 @@
 # HeiChips 2025 Tiny Wrapper
 
+![A screenshot of the design opened in openROAD](doc/img/openroad.jpg "'Tiny Wrapper'")
+
 This repository contains a wrapper for the
 [FALU](https://github.com/christophhuebner/FALU/tree/main) and the
 [PPWM](https://github.com/towoe/heichips25-ppwm) project, since these occupy
 less than half of the small template.
+To pull the repo including the submodules, run the following commmand:
 
-![A screenshot of the design opened in openROAD](doc/img/openroad.jpg "'Tiny Wrapper'")
+> [!todo]
+> This needs to be updated once the template is forked on FPGA-Research
 
-Due to the limited number of pins, only one design can be active at a time. The
-designs can be selected using the `ena` input.
+```shell
+git clone --recursive TODO
+```
 
-| `ena`       | Selected Project   |
-|:-----------:|:------------------:|
-|  0          |  PPWM              |
-|  1          |  FALU              |
+If you have already cloned the repo, you can just fetch the submodules by
+running this command:
+
+```shell
+git submodule update --init --recursive
+```
+
+Since both projects don't use many pins, they can be used simultaneously. `FALU`
+uses bits 0-3 (e.g. `uo_out[3:0]`) of each signal and `PPWM` uses bits 4-7 (e.g.
+`uo_out[7:4]`).
+
 
 ## Prerequisites
 
